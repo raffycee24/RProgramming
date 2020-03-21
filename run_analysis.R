@@ -56,3 +56,5 @@ step5 <- step2 %>%
     group_by(Subject, activity) %>%
     summarise_all(funs(mean))
 write.table(step5, "FinalData.txt", row.name=FALSE)
+
+makeCodebook(str(step5))

@@ -85,10 +85,3 @@ step5 <- step2 %>%
     summarise_all(funs(mean))
 write.table(step5, "FinalData.txt", row.name=FALSE)
 ```
-
-
-## Creating a Codebook
-
-```{r}
-makeCodebook(step5)
-```

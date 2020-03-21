@@ -1,14 +1,3 @@
----
-title: "R Programming"
-author: "Raffy Centeno"
-date: "3/21/2020"
-output: html_document
----
-
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-```
-
 ## Load Packages
 
 ```{r}

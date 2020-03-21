@@ -55,4 +55,4 @@ names(step2)<-gsub("gravity", "Gravity", names(step2))
 step5 <- step2 %>%
     group_by(Subject, activity) %>%
     summarise_all(funs(mean))
-write.table(step5, "FinalData.txt", row.name=FALSE)
+write.table(step5, "submit-data.txt", row.name=FALSE)

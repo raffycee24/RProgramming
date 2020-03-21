@@ -2,13 +2,13 @@ library(dplyr)
 
 # Check and download the file
 file <- "Coursera_DS3_Final.zip"
-if (!file.exists(filename)){
+if (!file.exists(file)){
   fileURL <- "https://d396qusza40orc.cloudfront.net/getdata%2Fprojectfiles%2FUCI%20HAR%20Dataset.zip"
-  download.file(fileURL, filename, method="curl")
+  download.file(fileURL, file, method="curl")
 } 
 # unzip the file
 if (!file.exists("UCI HAR Dataset")) { 
-  unzip(filename) 
+  unzip(file) 
 }
 
 # assign each data frame
@@ -56,5 +56,3 @@ step5 <- step2 %>%
     group_by(Subject, activity) %>%
     summarise_all(funs(mean))
 write.table(step5, "FinalData.txt", row.name=FALSE)
-
-makeCodebook(str(step5))

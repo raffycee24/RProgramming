@@ -1,87 +1,44 @@
-## Load Packages
+## About the Dataset
+The experiments have been carried out with a group of 30 volunteers within an age bracket of 19-48 years. Each person performed six activities (WALKING, WALKING_UPSTAIRS, WALKING_DOWNSTAIRS, SITTING, STANDING, LAYING) wearing a smartphone (Samsung Galaxy S II) on the waist. Using its embedded accelerometer and gyroscope, we captured 3-axial linear acceleration and 3-axial angular velocity at a constant rate of 50Hz. The experiments have been video-recorded to label the data manually. The obtained dataset has been randomly partitioned into two sets, where 70% of the volunteers was selected for generating the training data and 30% the test data.
+The sensor signals (accelerometer and gyroscope) were pre-processed by applying noise filters and then sampled in fixed-width sliding windows of 2.56 sec and 50% overlap (128 readings/window). The sensor acceleration signal, which has gravitational and body motion components, was separated using a Butterworth low-pass filter into body acceleration and gravity. The gravitational force is assumed to have only low frequency components, therefore a filter with 0.3 Hz cutoff frequency was used. From each window, a vector of features was obtained by calculating variables from the time and frequency domain.
 
-```{r}
-library(dplyr)
-```
+## Attribute Information
+For each record in the dataset it is provided:
+- Triaxial acceleration from the accelerometer (total acceleration) and the estimated body acceleration.
+- Triaxial Angular velocity from the gyroscope.
+- A 561-feature vector with time and frequency domain variables.
+- Its activity label.
+- An identifier of the subject who carried out the experiment. 
 
-
-## Downloading and Attaching Dataset
-
-```{r, message=FALSE}
-# Check and download the file
-file <- "Coursera_DS3_Final.zip"
-if (!file.exists(filename)){
-  fileURL <- "https://d396qusza40orc.cloudfront.net/getdata%2Fprojectfiles%2FUCI%20HAR%20Dataset.zip"
-  download.file(fileURL, filename, method="curl")
-} 
-# unzip the file
-if (!file.exists("UCI HAR Dataset")) { 
-  unzip(filename) 
-}
-```
-
-
-## Assigning of Data Frame
-
-```{r}
-features <- read.table("UCI HAR Dataset/features.txt", col.names = c("n","Functions"))
-activities <- read.table("UCI HAR Dataset/activity_labels.txt", col.names = c("Code", "Activity"))
-subject_testset <- read.table("UCI HAR Dataset/test/subject_test.txt", col.names = "Subject")
-x_testset <- read.table("UCI HAR Dataset/test/X_test.txt", col.names = features$Functions)
-y_testset <- read.table("UCI HAR Dataset/test/y_test.txt", col.names = "Code")
-subject_trainset <- read.table("UCI HAR Dataset/train/subject_train.txt", col.names = "Subject")
-x_trainset <- read.table("UCI HAR Dataset/train/X_train.txt", col.names = features$Functions)
-y_trainset <- read.table("UCI HAR Dataset/train/y_train.txt", col.names = "Code")
-```
+## Dataset
+The dataset includes the following 2 folders (test and train) both of which contains the following files:
+- 'features_info.txt': Shows information about the variables used on the feature vector.
+- 'features.txt': List of all features.
+- 'activity_labels.txt': Links the class labels with their activity name.
+- 'train/X_train.txt': Training set.
+- 'train/y_train.txt': Training labels.
+- 'test/X_test.txt': Test set.
+- 'test/y_test.txt': Test labels.
+- 'train/subject_train.txt': Each row identifies the subject who performed the activity for each window sample. Its range is from 1 to 30. 
+- 'train/Inertial Signals/total_acc_x_train.txt': The acceleration signal from the smartphone accelerometer X axis in standard gravity units 'g'. Every row shows a 128 element vector. The same description applies for the 'total_acc_x_train.txt' and 'total_acc_z_train.txt' files for the Y and Z axis. 
+- 'train/Inertial Signals/body_acc_x_train.txt': The body acceleration signal obtained by subtracting the gravity from the total acceleration. 
+- 'train/Inertial Signals/body_gyro_x_train.txt': The angular velocity vector measured by the gyroscope for each window sample. The units are radians/second. 
 
 
-## Merging Data Set
-
-```{r}
-Xdata <- rbind(x_trainset, x_testset) # merge the training and testing set for x dataset
-Ydata <- rbind(y_trainset, y_testset) # merge the training and testing set for y dataset
-Subjects <- rbind(subject_trainset, subject_testset) #merge the training set and testing set
-Merged <- cbind(Subjects, Ydata, Xdata)
-```
-
-
-## Extracting Measurements
-
-```{r}
-step2 <- Merged %>% select(Subject, Code, contains("mean"), contains("std"))
-```
+## Code Details
+In the attached run_analysis.R you will see the codes that will perform the following tasks.
+- Merges the training and the test sets to create one data set.
+- Extracts only the measurements on the mean and standard deviation for each measurement.
+- Uses descriptive activity names to name the activities in the data set
+- Appropriately labels the data set with descriptive variable names.
+- From the data set in step 4, creates a second, independent tidy data set with the average of each variable for each activity and each subject.
 
 
-## Using descriptive activity
+## License:
+Use of this dataset in publications must be acknowledged by referencing the following publication [1] 
 
-```{r}
-step2$Code <- activities[step2$Code, 2]
-```
+[1] Davide Anguita, Alessandro Ghio, Luca Oneto, Xavier Parra and Jorge L. Reyes-Ortiz. Human Activity Recognition on Smartphones using a Multiclass Hardware-Friendly Support Vector Machine. International Workshop of Ambient Assisted Living (IWAAL 2012). Vitoria-Gasteiz, Spain. Dec 2012
 
+This dataset is distributed AS-IS and no responsibility implied or explicit can be addressed to the authors or their institutions for its use or misuse. Any commercial use is prohibited.
 
-## Labeling the Dataset
-
-```{r}
-names(step2)[2] = "activity"
-names(step2)<-gsub("Acc", "Accelerometer", names(step2))
-names(step2)<-gsub("Gyro", "Gyroscope", names(step2))
-names(step2)<-gsub("BodyBody", "Body", names(step2))
-names(step2)<-gsub("Mag", "Magnitude", names(step2))
-names(step2)<-gsub("^t", "Time", names(step2))
-names(step2)<-gsub("^f", "Frequency", names(step2))
-names(step2)<-gsub("tBody", "TimeBody", names(step2))
-names(step2)<-gsub("-mean()", "Mean", names(step2), ignore.case = TRUE)
-names(step2)<-gsub("-std()", "STD", names(step2), ignore.case = TRUE)
-names(step2)<-gsub("-freq()", "Frequency", names(step2), ignore.case = TRUE)
-names(step2)<-gsub("angle", "Angle", names(step2))
-names(step2)<-gsub("gravity", "Gravity", names(step2))
-```
-
-## Tidy Dataset
-
-```{r}
-step5 <- step2 %>%
-    group_by(Subject, activity) %>%
-    summarise_all(funs(mean))
-write.table(step5, "FinalData.txt", row.name=FALSE)
-```
+Jorge L. Reyes-Ortiz, Alessandro Ghio, Luca Oneto, Davide Anguita. November 2012.
